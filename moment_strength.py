@@ -7,7 +7,7 @@ A_r_table = {'D10': 71.3, 'D13': 126.7, 'D16': 198.6,
 
 phi = 0.9           # KBC2016 0709.3.2.1
 
-endCondition = 'Fixed end'  # 'Pin-Pin', 'Fix-Pin', 'Fix-Free'
+endCondition = 'Pin-Pin'  # 'Fixed end', 'Fix-Pin', 'Fix-Free'
 
 W_L = 50            # 활하중 [kN/m]
 W_D1 = 41.4         # 고정하중(데크플레이트, 토핑콘크리트, 강재보) [kN/m]
