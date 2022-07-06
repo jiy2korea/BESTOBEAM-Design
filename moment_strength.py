@@ -27,7 +27,7 @@ E_scr = E_s / E_c   # 강재/콘크리트 탄성비
 H_s = 600
 B_s = 300
 B_tf = 80
-t = 9
+t = 12
 A_st = 2 * B_tf * t             # 상부 플랜지 면적
 A_sw = 2 * H_s * t              # 웨브 면적
 A_sb = (B_s-2*t) * t            # 하부 플랜지 면적
@@ -197,8 +197,8 @@ accRatioLimit = {'사무실': 0.005, '쇼핑몰': 0.015, '육교(실내)': 0.015
 g = 9.81    # 중력가속도 [m/sec^2]
 W = 2000
 f_n = 0.18 * (g / delta_L)**(1/2)
-accRatio = P_o['사무실'] * math.log(-0.35*f_n) / (beta['사무실'] * W)
-if (accRatio < accRatioLimit):
+accRatio = P_o['사무실'] * math.exp(-0.35*f_n) / (beta['사무실'] * W)
+if (accRatio < accRatioLimit['사무실']):
     print('바닥진동 검토: OK')
 else:
     print('바닥진동 검토: NG')
