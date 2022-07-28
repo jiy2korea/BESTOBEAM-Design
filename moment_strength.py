@@ -52,17 +52,19 @@ LL_con = 1.5            # 시공하중 [kN/m^2]
 ## 계산
 
 # U 단면
-topF_1 = library.SquareSectionProperties(H=t, B=B_tf, x=B_tf/2, y=H_u-t/2)
-topF_2 = library.SquareSectionProperties(H=t, B=B_tf, x=B_tf+B_u+B_tf/2, y=H_u-t/2)
-web_1 = library.SquareSectionProperties(H=H_u, B=t, x=B_tf+t/2, y=H_u/2)
-web_2 = library.SquareSectionProperties(H=H_u, B=t, x=B_tf+B_u-t/2, y=H_u/2)
+topF1 = library.SquareSectionProperties(H=t, B=B_tf, x=B_tf/2, y=H_u-t/2)
+topF2 = library.SquareSectionProperties(H=t, B=B_tf, x=B_tf+B_u+B_tf/2, y=H_u-t/2)
+web1 = library.SquareSectionProperties(H=H_u, B=t, x=B_tf+t/2, y=H_u/2)
+web2 = library.SquareSectionProperties(H=H_u, B=t, x=B_tf+B_u-t/2, y=H_u/2)
 bottomFlange_U = library.SquareSectionProperties(H=t, B=B_u-2*t, x=B_tf+B_u/2, y=t/2)
-U_section = library.CombinedSectionProperties(topF_1, topF_2, web_1, web_2, bottomFlange_U)
+U_section = library.CombinedSectionProperties(topF1, topF2, web1, web2, bottomFlange_U)
 W_U_Section = U_section.area/10**6 * 78.5   # 단위길이당 하중 [kN/m]   강재의 단위중량 78.5 kN/m3
 A_s = U_section.area
 y_s = U_section.centerY
 I_x_U = U_section.inertiaX
 P_y = U_section.area* F_y
+
+plasticSecCoef = library.PlasticSectionCoefficient([topF1, topF2, bottomFlange_U], [web1, web2]).plasticSecCoef
 
 # H 단면
 topFlange = library.SquareSectionProperties(H=t_f, B=B_s, x=(B_s/2), y=(H_s-t_f/2))
@@ -94,6 +96,7 @@ tranConcSection.locationX = concSection.centerX
 tranConcSection.locationY = concSection.centerY
 compositeSection = library.CombinedSectionProperties(U_section, tranConcSection)
 I_com = compositeSection.inertiaX # 완전합성환산단면 Ixx
+
 
 # 하부철근
 A_rb = library.A_r_table[D_rb] * n_rb   # 하부 철근 총단면적
