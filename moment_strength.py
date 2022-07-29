@@ -49,6 +49,7 @@ DL_finish = 2.6         # 마감하중 [kN/m^2]
 LL_per = 5              # 활하중   [kN/m^2]
 LL_con = 1.5            # 시공하중 [kN/m^2]
 
+
 ## 계산
 
 # U 단면
@@ -63,8 +64,15 @@ A_s = U_section.area
 y_s = U_section.centerY
 I_x_U = U_section.inertiaX
 P_y = U_section.area* F_y
+plasticSecCoef_U = library.PlasticSectionCoefficient([topF1, topF2, bottomFlange_U], [web1, web2]).plasticSecCoef
 
-plasticSecCoef = library.PlasticSectionCoefficient([topF1, topF2, bottomFlange_U], [web1, web2]).plasticSecCoef
+# U단면 판폭두께비
+WTR_topFlange = library.WTRatio(width=B_tf, thickness=t, E_s=E_s, F_y=F_y)
+WTR_Web = library.WTRatio(width=H_u, thickness=t, E_s=E_s, F_y=F_y)
+WTR_bottomFlange = library.WTRatio(width=B_u, thickness=t, E_s=E_s, F_y=F_y)
+print('Top Flange is ', WTR_topFlange.TopFlange())
+print('Web is ', WTR_Web.Web())
+print('Bottom Flange is ', WTR_bottomFlange.BottomFlange())
 
 # H 단면
 topFlange = library.SquareSectionProperties(H=t_f, B=B_s, x=(B_s/2), y=(H_s-t_f/2))
@@ -97,7 +105,6 @@ tranConcSection.locationY = concSection.centerY
 compositeSection = library.CombinedSectionProperties(U_section, tranConcSection)
 I_com = compositeSection.inertiaX # 완전합성환산단면 Ixx
 
-
 # 하부철근
 A_rb = library.A_r_table[D_rb] * n_rb   # 하부 철근 총단면적
 P_rb = A_rb * F_r
@@ -107,13 +114,18 @@ F_a = 31000 * h_a**(3/4) * f_ck**(2/3) / B_u**(1/2)     # 전단연결재 1개�
 N_a = math.floor(length_U / S_a)    # 전단연결재 개수
 Q_n = F_a * N_a
 
-# U단면 판폭두께비 검토
-WTR_topFlange = library.WTRatio(width=B_tf, thickness=t, E_s=E_s, F_y=F_y)
-WTR_Web = library.WTRatio(width=H_u, thickness=t, E_s=E_s, F_y=F_y)
-WTR_bottomFlange = library.WTRatio(width=B_u, thickness=t, E_s=E_s, F_y=F_y)
-print('Top Flange is ', WTR_topFlange.TopFlange())
-print('Web is ', WTR_Web.Web())
-print('Bottom Flange is ', WTR_bottomFlange.BottomFlange())
+# 하중
+
+
+## 시공시 검토
+
+# 정모멘트 [KBC0706.6]
+# 항복강도
+M_n = F_y * plasticSecCoef_U
+
+# 플랜지국부좌굴강도 => 콤팩트플랜지인 경우에는 국부좌굴강도 고려 안함
+
+
 
 # 콘크리트 압축력 KBC2016 0709.3.2.1
 C1 = P_y + P_rb                     # 강재+철근의 인장강도
